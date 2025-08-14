@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('coordinates');
             $table->longText('description');
-            $table->string('image')->nullable();
+            $table->string('image');
             $table->timestamps();
         });
     }

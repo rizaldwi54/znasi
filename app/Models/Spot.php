@@ -14,14 +14,8 @@ class Spot extends Model
     public function getImageAsset()
     {
         if($this->image) {
-            return asset('upload/spots/'.$this->image);
+            return asset('upload/image/'.$this->image);
         }
-        return 'https://placehold.co/150x200?text=Hello+World';
+        return 'https://placehold.co/150x200?text=No+Image';
     }
-    // public function getDokuemAsset()
-    // {
-    //     if($this->dokumen) {
-    //         return asset('upload/dokumen/'.$this->dokumen);
-    //     }
-    // }
 }

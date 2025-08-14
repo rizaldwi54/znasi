@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-    <title>Login</title>
+    <title>Forgot Password</title>
     <!-- [Meta] -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -32,7 +32,6 @@
     <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/css/style.css" id="main-style-link">
     <link rel="stylesheet" href="{{ asset('template/dist') }}/assets/css/style-preset.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
     {{-- @vite(['resources/js/app.js']) --}}
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -56,11 +55,8 @@
                 </div>
                 <div class="card my-5">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-end mb-4">
-                            <h3 class="mb-0"><b>Login</b></h3>
-                            <a href="{{ route('register') }}" class="link-primary">Don't have an account?</a>
-                        </div>
-                        <form action="{{ route('auth.verify') }}" method="post">
+                        <h3>Reset Password</h3>
+                        <form action="/forgot-password" method="post">
                             @csrf
 
                             <div class="form-group mb-3">
@@ -75,46 +71,16 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" name="password" id="password"
-                                    class="form-control @error('password')
-                                    is-invalid
-                                @enderror"
-                                    placeholder="Password"
-                                    @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
-                                    required>
-                                @error('password')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="d-flex mt-1 justify-content-between">
-                                <div class="form-check">
-                                    <input class="form-check-input input-primary" type="checkbox" id="remember"
-                                        checked="" name="remember"
-                                        @if (isset($_COOKIE['email'])) checked="" @endif>
-                                    <label class="form-check-label text-muted" for="remember">Keep me sign in</label>
-                                </div>
-                                <a href="/forgot-password" class="link primary">Forgot Password!?</a>
-                            </div>
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary">Login</button>
+                                <button type="submit" class="btn btn-primary">Send</button>
                             </div>
                         </form>
-                        <div class="saprator mt-3">
-                            <span>Login with</span>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="http://localhost:8000/auth/google/redirect" class="button">Google</a>
-                            </div>
-                        </div>
-                        @if (session('status'))
-                            <div class="alert alert-success col-md-6 mt-3" style="max-width: 400px">
-                                {{ session('status') }}
-                            </div>
-                        @endif
                     </div>
+                    @if (session('status'))
+                        <div class="alert alert-success col-md-6 mt-3" style="max-width: 400px">
+                            {{ session('status') }}
+                        </div>
+                    @endif
                 </div>
                 <div class="auth-footer row">
                     <!-- <div class=""> -->
@@ -145,7 +111,6 @@
     <script src="{{ asset('template/dist') }}/assets/js/fonts/custom-font.js"></script>
     <script src="{{ asset('template/dist') }}/assets/js/pcoded.js"></script>
     <script src="{{ asset('template/dist') }}/assets/js/plugins/feather.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
 
@@ -177,29 +142,6 @@
     <script>
         font_change("Public-Sans");
     </script>
-    <script>
-        @if (Session::has('message'))
-        var type = "{{ Session::get('alert-type','info') }}"
-        switch(type){
-            case'info':
-            toastr.info("{{ Session::get('message') }}");
-            break;
-
-            case'success':
-            toastr.success("{{ Session::get('message') }}");
-            break;
-            
-            case'warning':
-            toastr.warning("{{ Session::get('message') }}");
-            break;
-            
-            case'error':
-            toastr.error("{{ Session::get('message') }}");
-            break;
-        }
-        @endif
-    </script>
-
 
 
 

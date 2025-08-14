@@ -35,27 +35,32 @@ class SpotController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'coordinate' => 'required',
             'name' => 'required',
             'description' => 'required',
-            'image' => 'file|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $spot = new Spot;
         if ($request->hasFile('image')) {
 
-            // $file = $request->file('image');
+            $image = $request->file('image');
+            $uploadFile = $image->hashName();
+            $image->move('upload/image/', $uploadFile);
+            $spot->image = $uploadFile;
 
+            // $image = $request->file('image');
+            // $file->storeAs('public/Image', $i->hashName());
+            // $spot->image = $file->hashName();
 
-            // // $filename = $file->getClientOriginalName();
-            // $filename = $file->hashName();
-            // $file->move(public_path('upload/spots'), $filename);
+            // $image = $request->file('image');
+            // $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            // Storage::disk('public')->putFileAs('Image', $image, $imageName);
+            // // $spot->image = $imageName;
+            // $newRequest = $request->all();
+            // $newRequest['image'] = $imageName;
 
-            $file = $request->file('image');
-            $file->storeAs('public/ImageSpots', $file->hashName());
-            $spot->image = $file->hashName();
-            // upload image
 
         }
 
@@ -64,6 +69,7 @@ class SpotController extends Controller
         $spot->description = $request->input('description');
         $spot->coordinates = $request->input('coordinate');
         $spot->save();
+
 
         if ($spot) {
             return to_route('spot.index')->with('success', 'Data berhasil disimpan');
@@ -83,10 +89,14 @@ class SpotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Spot $spot)
     {
-        $spot = Spot::findOrFail($id); // Fetch the spot by ID
-        return view('Content.spot.edit', compact('spot'));
+        $centerPoint = centerPoint::get()->first();
+        // Fetch the spot by ID
+        return view('Content.spot.edit', [
+            'centerPoint' => $centerPoint,
+            'spot' => $spot
+        ]);
     }
 
     /**
@@ -94,30 +104,30 @@ class SpotController extends Controller
      */
     public function update(Request $request, Spot $spot)
     {
-        $validated = $request->validate([
+        $request->validate([
             'coordinate' => 'required',
             'name' => 'required',
             'description' => 'required',
-            'image' => 'file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
             // Hapus File image pada folder public/upload/spots
-            if ($spot->image && Storage::exists('public/spots/' . $spot->image)) {
-                Storage::delete('public/spots/' . $spot->image);
+            if (File::exists('upload/image/' . $spot->image)) {
+                File::delete('upload/image/' . $spot->image);
             }
 
             // Proses Upload File image ke folder public/upload/spots
-            $file = $request->file('image');
-            $fileName = $file->hashName();
-            $file->storeAs('public/spots/', $fileName);
-            $spot->image = $fileName;
+            $image = $request->file('image');
+            $uploadFile = $image->hashName();
+            $image->move('upload/image/', $uploadFile);
+            $spot->image = $uploadFile;
 
             // Proses hapus & Upload File image ke folder public/upload/spots
-            Storage::disk('local')->delete('public/spots/' . $spot->image);
-            $file = $request->file('image');
-            $file->storeAs('public/ImageSpot', $file->hashName());
-            $spot->image = $file->hashName();
+            // Storage::disk('local')->delete('public/spots/' . $spot->image);
+            // $file = $request->file('image');
+            // $file->storeAs('public/ImageSpot', $file->hashName());
+            // $spot->image = $file->hashName();
         }
         $spot->name = $request->input('name');
         $spot->slug = Str::slug($request->name, '-');
@@ -125,16 +135,16 @@ class SpotController extends Controller
         $spot->coordinates = $request->input('coordinate');
         $spot->update();
 
-        // if ($spot) {
-        //     return to_route('spot.index')->with('success', 'Data berhasil diupdate');
-        // } else {
-        //     return to_route('spot.index')->with('error', 'Data gagal diupdate');
-        // }
 
-        return redirect()->route('spot.index')->with(
-            $spot->wasChanged() ? 'success' : 'info',
-            $spot->wasChanged() ? 'Data berhasil diupdate' : 'Tidak ada perubahan data'
-        );
+        if ($spot) {
+            return to_route('spot.index')->with('success', 'Data berhasil diupdate');
+        } else {
+            return to_route('spot.index')->with('error', 'Data gagal diupdate');
+        }
+        // return redirect()->route('spot.index')->with(
+        //     $spot->wasChanged() ? 'success' : 'info',
+        //     $spot->wasChanged() ? 'Data berhasil diupdate' : 'Tidak ada perubahan data'
+        // );
     }
 
     /**
@@ -143,8 +153,8 @@ class SpotController extends Controller
     public function destroy($id)
     {
         $spot = Spot::findOrFail($id);
-        if (File::exists('upload/spots/' . $spot->image)) {
-            File::delete('upload/spots/' . $spot->image);
+        if (File::exists('upload/image/' . $spot->image)) {
+            File::delete('upload/image/' . $spot->image);
         }
         $spot->delete();
         return redirect()->back();

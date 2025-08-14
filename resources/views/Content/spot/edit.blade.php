@@ -56,7 +56,7 @@
                             <div class="card-body">
                                 <div class="form-group my-3">
                                     <label for="">Upload Gambar</label>
-                                    <img src="{{ $spot->getImageAsset() }}" alt="">
+                                    <img src="{{ $spot->getImageAsset()}}" alt="">
                                     <input type="file" class="form-control @error('image')
                                         is-invalid
                                     @enderror" name="image" >

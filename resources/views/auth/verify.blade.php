@@ -57,63 +57,46 @@
                 <div class="card my-5">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-end mb-4">
-                            <h3 class="mb-0"><b>Login</b></h3>
-                            <a href="{{ route('register') }}" class="link-primary">Don't have an account?</a>
-                        </div>
-                        <form action="{{ route('auth.verify') }}" method="post">
-                            @csrf
-
-                            <div class="form-group mb-3">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" name="email"
-                                    class="form-control @error('email')
-                                    is-invalid
-                                @enderror"
-                                    placeholder="Email Address" autocomplete="off"
-                                    @if (isset($_COOKIE['email'])) value="{{ $_COOKIE['email'] }}" @endif required>
-                                @error('email')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" name="password" id="password"
-                                    class="form-control @error('password')
-                                    is-invalid
-                                @enderror"
-                                    placeholder="Password"
-                                    @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
-                                    required>
-                                @error('password')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="d-flex mt-1 justify-content-between">
-                                <div class="form-check">
-                                    <input class="form-check-input input-primary" type="checkbox" id="remember"
-                                        checked="" name="remember"
-                                        @if (isset($_COOKIE['email'])) checked="" @endif>
-                                    <label class="form-check-label text-muted" for="remember">Keep me sign in</label>
-                                </div>
-                                <a href="/forgot-password" class="link primary">Forgot Password!?</a>
-                            </div>
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                        <div class="saprator mt-3">
-                            <span>Login with</span>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="http://localhost:8000/auth/google/redirect" class="button">Google</a>
-                            </div>
+                            <h3 class="mb-0"><b>Verification Page</b></h3>
                         </div>
                         @if (session('status'))
                             <div class="alert alert-success col-md-6 mt-3" style="max-width: 400px">
                                 {{ session('status') }}
                             </div>
                         @endif
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger mt-3">
+                                <ul>
+                                    @foreach ($errors->all() as $error )
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form action="{{ route('custom.verificaton.verify') }}" method="post">
+                            @csrf
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Verification Code</label>
+                                <input type="text" name="code" id="code"
+                                    class="form-control @error('code')
+                                    is-invalid
+                                @enderror"
+                                    placeholder="Your Code" autocomplete="off" required>
+                                @error('code')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">Verify</button>
+                            </div>
+                        </form>
+                        
+                        
+                        
                     </div>
                 </div>
                 <div class="auth-footer row">

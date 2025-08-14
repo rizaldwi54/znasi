@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Spot;
+use App\Models\User;
 use Illuminate\View\View;
 use App\Models\CenterPoint;
-use Illuminate\Http\Request;
-use PhpParser\Node\Expr\FuncCall;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UserDashboardController extends Controller
 {
     public function index(): View
     {
-        return view('Content.user.dashboard');
+        $id = Auth::user()->id;
+        $profileData = User::find($id);
+        return view('Content.user.dashboard', compact('profileData'));
     }
 
     public function spots()
@@ -22,7 +24,7 @@ class UserDashboardController extends Controller
         $spot = Spot::get();
 
         return view('Content.user.index',[
-            'CenterPoint' => $centerPoint,
+            'centerPoint' => $centerPoint,
             'spot' => $spot
         ]);
     }
@@ -32,4 +34,13 @@ class UserDashboardController extends Controller
         $spot = Spot::where('slug',$slug)->first();
         return view('Content.user.detail', ['spot' => $spot]);
     }
+
+    public function registrasi()
+    {
+        $id = Auth::user()->id;
+        $profileData = User::find($id);
+        return view('Content.user.pendaftaran' , compact('profileData'));
+    }
+
+    
 }

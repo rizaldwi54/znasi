@@ -1,0 +1,93 @@
+@extends('Content.admin.dashboard')
+
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
+@endsection
+
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        Data Siswa
+                        <a href="{{ route('center-point.create') }}" class="btn btn-info btn-sm float-end">Create data</a>
+                    </div>
+                    <div class="card-body">
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <table class="table" id="dataCenterPoint">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Alamat</th>
+                                    <th>Nama Orang Tua</th>
+                                    <th>Koordinat</th>
+                                    <th>PDF</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <form action="" method="POST" id="deleteForm">
+                            @csrf
+                            @method('DELETE')
+                            <input type="submit" value="Delete" style="display:none">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('javascript')
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.js"></script>
+    <script>
+        $(function() {
+            $('#dataUser').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                ajax: '{{ route('user.data') }}',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'name'
+                    },
+                    {
+                        data: 'address'
+                    },
+                    {
+                        data: 'parents_name'
+                    },
+                    {
+                        data: 'coordinates'
+                    },
+                    {
+                        data: 'pdf'
+                    },
+                    {
+                        data: 'action'
+                    }
+                ]
+            })
+        })
+    </script>
+@endpush

@@ -38,4 +38,6 @@ class RegisterController extends Controller
         Auth::login($user);
         return redirect('/user/home')->with('success', 'Registration successful!');
     }
+
+    
 }
